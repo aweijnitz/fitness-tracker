@@ -1,0 +1,18 @@
+{
+  "name": "fittrack-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "vitest run",
+    "build": "echo 'no build needed'"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.4",
+    "vitest": "^3.2.4"
+  }
+}

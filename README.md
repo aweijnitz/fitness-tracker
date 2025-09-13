@@ -1,36 +1,26 @@
-# FitTrack PWA
+# Fitness Tracker Monorepo
 
-Offline-first fitness tracker with a self-hosted backend. Client implemented as a progressive web application (PWA).
+This repository contains two packages:
 
-Target: Android smartphones 
+- **client/** – React progressive web application.
+- **server/** – Express backend that serves the built client and provides a REST API.
 
-Stack: React, Vite, Tailwind CSS, VitePWA (Workbox), OpenAuth, self‑hosted backend • Mode: Offline‑first
+## Commands
 
-## Setup
-
-```sh
-npm install
-```
-
-## Development
-
-```sh
-npm run dev
-```
-
-## Build
-
-```sh
-npm run build
-npm run preview
-```
-
-## Testing
+Run tests for both packages:
 
 ```sh
 npm test
 ```
 
-## PWA
+Build the client and server:
 
-The app is configured with `vite-plugin-pwa` using an injected Workbox service worker. Run `npm run dev` and open the site in your browser. After the first load, reload the page to activate the service worker. You can then switch to offline mode and navigate to the app; the `/offline` page will be shown when network requests fail.
+```sh
+npm run build
+```
+
+Start the backend (after building the client):
+
+```sh
+npm start
+```
