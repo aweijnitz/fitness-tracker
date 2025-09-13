@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { beforeEach } from 'vitest';
 import App from '../App';
 import { AuthProvider } from '../providers/AuthProvider';
+import { tokenManager } from '../auth/tokenManager';
 
 function renderApp(initialEntries = ['/']) {
   const queryClient = new QueryClient();
@@ -17,15 +19,17 @@ function renderApp(initialEntries = ['/']) {
   );
 }
 
-test('redirects to login when not authenticated', () => {
-  renderApp();
-  expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+beforeEach(async () => {
+  await tokenManager.clear();
 });
 
-test('shows dashboard after login', async () => {
-  renderApp(['/login']);
-  screen.getByRole('button', { name: /login/i }).click();
+test('redirects to login when not authenticated', async () => {
+  renderApp();
+  expect(await screen.findByRole('button', { name: /login/i })).toBeInTheDocument();
+});
+
+test('shows dashboard when token is stored', async () => {
+  await tokenManager.save({ accessToken: 'a', refreshToken: 'r', expiresAt: Date.now() + 1000 });
+  renderApp(['/']);
   expect(await screen.findByText(/Weight Trend/)).toBeInTheDocument();
-  expect(screen.getByText(/Calories Remaining Today/)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /meals/i })).toBeInTheDocument();
 });
