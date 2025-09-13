@@ -1,6 +1,10 @@
 # FitTrack PWA
 
-Scaffolded React + Vite + Tailwind CSS application with VitePWA and placeholder authentication.
+Offline-first fitness tracker with a self-hosted backend. Client implemented as a progressive web application (PWA).
+
+Target: Android smartphones 
+
+Stack: React, Vite, Tailwind CSS, VitePWA (Workbox), OpenAuth, self‑hosted backend • Mode: Offline‑first
 
 ## Setup
 
