@@ -8,7 +8,7 @@ import Settings from './routes/Settings';
 import Login from './routes/Login';
 import Callback from './routes/Callback';
 import Offline from './routes/Offline';
-import RequireAuth from './routes/RequireAuth';
+import ProtectedRoute from './routes/ProtectedRoute';
 import NewMeal from './routes/NewMeal';
 
 export default function App() {
@@ -19,9 +19,9 @@ export default function App() {
       <Route path="/offline" element={<Offline />} />
       <Route
         element={
-          <RequireAuth>
+          <ProtectedRoute>
             <AppShell />
-          </RequireAuth>
+          </ProtectedRoute>
         }
       >
         <Route path="/" element={<Dashboard />} />
