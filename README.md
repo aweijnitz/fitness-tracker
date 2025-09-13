@@ -52,7 +52,7 @@ erDiagram
   Activity {
     string id PK
     string userId FK
-    enum kind  "walk|run|ride|other"
+    enum kind  "walk|nordicWalking|ride|pushUps|burpees|crunches|plank"
     float distanceKm
     int durationSec
     int steps
