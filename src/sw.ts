@@ -7,6 +7,10 @@ import { replayMutations } from './sync';
 
 declare let self: ServiceWorkerGlobalScope;
 
+interface SyncEvent extends ExtendableEvent {
+  tag: string;
+}
+
 clientsClaim();
 precacheAndRoute(self.__WB_MANIFEST);
 
@@ -31,7 +35,8 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-mutations') {
-    event.waitUntil(replayMutations());
+  const syncEvent = event as SyncEvent;
+  if (syncEvent.tag === 'sync-mutations') {
+    syncEvent.waitUntil(replayMutations());
   }
 });

@@ -1,4 +1,4 @@
-import { db, AppDB, Mutation, MutationEntity, MutationOperation } from './db';
+import { db, type AppDB, type Mutation, type MutationEntity, type MutationOperation } from './db';
 
 export async function enqueueMutation(
   mutation: { entity: MutationEntity; operation: MutationOperation; payload: unknown },
@@ -26,7 +26,9 @@ export async function registerSync(tag = 'sync-mutations') {
   }
   const reg = await navigator.serviceWorker.ready;
   try {
-    await reg.sync.register(tag);
+    await (reg as ServiceWorkerRegistration & {
+      sync: { register(tag: string): Promise<void> };
+    }).sync.register(tag);
   } catch {
     // ignore
   }

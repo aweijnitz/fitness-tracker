@@ -1,4 +1,4 @@
-import { LocationSample } from '../db';
+import type { LocationSample } from '../db';
 import { haversineDistance } from './distance';
 
 export interface SessionState {
