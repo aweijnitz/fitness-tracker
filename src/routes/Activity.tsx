@@ -3,7 +3,7 @@ import {
   initialSessionState,
   sessionReducer,
 } from '../activity/session';
-import { db, Activity as ActivityRecord } from '../db';
+import { db, type Activity as ActivityRecord } from '../db';
 import { enqueueMutation } from '../sync';
 
 export default function Activity() {

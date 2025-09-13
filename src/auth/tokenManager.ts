@@ -9,18 +9,24 @@ export interface TokenSet {
 
 const STORAGE_KEY = 'authTokens';
 
+interface NodeBuffer {
+  from(data: string, encoding: string): { toString(encoding: string): string };
+}
+
 function encode(data: string): string {
   if (typeof btoa !== 'undefined') {
     return btoa(data);
   }
-  return Buffer.from(data, 'utf-8').toString('base64');
+  const buffer = (globalThis as unknown as { Buffer: NodeBuffer }).Buffer;
+  return buffer.from(data, 'utf-8').toString('base64');
 }
 
 function decode(data: string): string {
   if (typeof atob !== 'undefined') {
     return atob(data);
   }
-  return Buffer.from(data, 'base64').toString('utf-8');
+  const buffer = (globalThis as unknown as { Buffer: NodeBuffer }).Buffer;
+  return buffer.from(data, 'base64').toString('utf-8');
 }
 
 export class TokenManager {
