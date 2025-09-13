@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { token } from 'openauth-js';
-import { tokenManager, TokenSet } from '../auth/tokenManager';
+import { tokenManager } from '../auth/tokenManager';
+import type { TokenSet } from '../auth/tokenManager';
 
 export default function Callback() {
   const { setIsAuthenticated } = useAuth();
