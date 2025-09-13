@@ -10,7 +10,7 @@
     "test": "vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,css,md}": "prettier --write"
