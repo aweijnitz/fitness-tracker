@@ -149,7 +149,7 @@ erDiagram
 
 Each package lists: *Business logic*, *Implementation notes*, *Unit tests & acceptance*.
 
-### WP0 – Project Bootstrap (Scaffold & Tooling)
+### WP0 – Project Bootstrap (Scaffold & Tooling) - STATUS: DONE
 
 **Business logic**: None (infra only).
 **Implementation**:
@@ -172,7 +172,7 @@ Each package lists: *Business logic*, *Implementation notes*, *Unit tests & acce
 * Token storage round‑trip and refresh.
   **Acceptance**: After login, user reaches Dashboard; reload keeps session.
 
-### WP2 – App Shell & Navigation
+### WP2 – App Shell & Navigation - STATUS: DONE
 
 **Business logic**: Bottom tabs for 5 screens; persistent layout.
 **Implementation**:
