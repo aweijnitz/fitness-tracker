@@ -160,7 +160,7 @@ Each package lists: *Business logic*, *Implementation notes*, *Unit tests & acce
   **Tests**: Vitest setup; RTL helpers; sample test for App shell renders.
   **Acceptance**: App loads offline after 2nd visit; `npm run test` passes.
 
-### WP1 – Auth (OpenAuth) + Protected Routes
+### WP1 – Auth (OpenAuth) + Protected Routes - STATUS: DONE (mock)
 
 **Business logic**: User can log in/out; unauthenticated users see login only.
 **Implementation**:
@@ -183,7 +183,7 @@ Each package lists: *Business logic*, *Implementation notes*, *Unit tests & acce
 * Route navigation tests; a11y landmarks.
   **Acceptance**: Tabs switch without full reload; works offline.
 
-### WP3 – Local DB (IndexedDB) & Sync Queue
+### WP3 – Local DB (IndexedDB) & Sync Queue - STATUS: DONE
 
 **Business logic**: All create/update/delete work offline; queued for sync.
 **Implementation**:
