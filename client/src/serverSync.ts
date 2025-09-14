@@ -1,7 +1,5 @@
 import { db, type AppDB, type Mutation, type WeightEntry, type Meal, type Activity, type Workout } from './db';
 
-const BASE = '';
-
 // Upload a single queued mutation to the server
 function toTs(v: unknown): number {
   if (typeof v === 'number') return v;
