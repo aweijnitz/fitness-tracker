@@ -47,38 +47,57 @@ The monorepo root also provides `npm start` which runs this package.
 
 ## Endpoints
 
-All endpoints are prefixed at the root (no global prefix) and return JSON.
+All endpoints return JSON. Timestamps are numbers (ms since epoch).
 
 - Meals
-  - `POST /v1/meals` — body: `{ id, name, calories, occurredAt, updatedAt }`
-  - `PUT /v1/meals/:id` — body: `{ name, calories, occurredAt, updatedAt }`
-  - `GET /v1/meals` — query: `since?` returns `{ items, syncStamp }`
+  - POST `/v1/meals` — body: `{ id, userId?, type?, name, calories, items?[], occurredAt, updatedAt, clientTag? }`
+  - PUT `/v1/meals/:id` — body: same as POST (fields updated)
+  - GET `/v1/meals?since=<ms>` — returns `{ items: Meal[], syncStamp }`
+  - DELETE `/v1/meals/:id` — returns `{ deleted: boolean }`
 
 - Activities
-  - `POST /v1/activities` — body: `{ id, kind, durationSec, updatedAt }`
-  - `PUT /v1/activities/:id` — body: `{ kind, durationSec, updatedAt }`
-  - `GET /v1/activities` — query: `since?` returns `{ items, syncStamp }`
+  - POST `/v1/activities` — body: `{ id, userId?, kind, distanceKm?, durationSec, steps?, samples?[], startedAt?, endedAt?, updatedAt, clientTag? }`
+  - PUT `/v1/activities/:id` — body: same as POST (fields updated)
+  - GET `/v1/activities?since=<ms>` — returns `{ items: Activity[], syncStamp }`
+  - DELETE `/v1/activities/:id` — returns `{ deleted: boolean }`
 
 - Workouts
-  - `POST /v1/workouts` — body: `{ id, name, updatedAt }`
-  - `PUT /v1/workouts/:id` — body: `{ name, updatedAt }`
-  - `GET /v1/workouts` — query: `since?` returns `{ items, syncStamp }`
+  - POST `/v1/workouts` — body: `{ id, userId?, name, reps?[], updatedAt, clientTag? }`
+  - PUT `/v1/workouts/:id` — body: same as POST (fields updated)
+  - GET `/v1/workouts?since=<ms>` — returns `{ items: Workout[], syncStamp }`
+  - DELETE `/v1/workouts/:id` — returns `{ deleted: boolean }`
 
 - Weights
-  - `POST /v1/weights` — body: `{ id, valueKg, occurredAt, updatedAt }`
-  - `PUT /v1/weights/:id` — body: `{ valueKg, occurredAt, updatedAt }`
-  - `GET /v1/weights` — query: `since` returns `{ items, syncStamp }`
-  - `DELETE /v1/weights/:id` — deletes entry; returns `{ deleted }`
+  - POST `/v1/weights` — body: `{ id, userId?, kg, occurredAt, updatedAt, clientTag? }`
+  - PUT `/v1/weights/:id` — body: same as POST (fields updated)
+  - GET `/v1/weights?since=<ms>` — returns `{ items: WeightEntry[], syncStamp }`
+  - DELETE `/v1/weights/:id` — returns `{ deleted: boolean }`
 
 - Static client
-  - `GET *` — serves `client/dist/index.html` and static assets
+  - GET `*` — serves `client/dist/index.html` and static assets
 
 - Dev utilities (disabled when `NODE_ENV=production`)
-  - `POST /v1/_dev/populate` — clears DB and inserts realistic sample data
-  - `POST /v1/_dev/clear` — deletes all rows in `meals`, `activities`, `workouts`, `weights`
+  - POST `/v1/_dev/populate` — clears DB and inserts realistic sample data
+  - POST `/v1/_dev/clear` — deletes all rows in `meals`, `activities`, `workouts`, `weights`
+
+## Data Model
+
+- Meal
+  - id, userId, type, name, calories, items[], occurredAt, updatedAt, clientTag
+- Activity
+  - id, userId, kind, distanceKm, durationSec, steps, samples[], startedAt, endedAt, updatedAt, clientTag
+- Workout
+  - id, userId, name, reps[], updatedAt, clientTag
+- WeightEntry
+  - id, userId, kg, occurredAt, updatedAt, clientTag
+
+Notes
+- Arrays (`items`, `samples`, `reps`) are stored as JSON in SQLite but the API accepts/returns arrays.
+  - Weights persist as `valueKg` in the DB; the API uses `kg` in payloads and responses.
+    This mapping is transparent to clients.
 
 ### Sanitization
 
-- IDs are sanitized to alphanumeric and dash via `sanitizeId`.
-- Text inputs are stripped of non-word/space/dash via `sanitizeText`.
-- Numeric fields are clamped and coerced via `sanitizeNumber`.
+- IDs: sanitized to alphanumeric and dash via `sanitizeId`.
+- Text: stripped of non-word/space/dash via `sanitizeText`.
+- Numbers: clamped/coerced via `sanitizeNumber`.

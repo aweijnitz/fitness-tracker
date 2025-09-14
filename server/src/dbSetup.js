@@ -51,22 +51,24 @@ export class MemoryDb {
       run(...params) {
         // meals
         if (lower.startsWith('insert or replace into meals')) {
-          const [id, name, calories, occurredAt, updatedAt] = params;
+          // id, userId, type, name, calories, items(JSON), occurredAt, updatedAt, clientTag
+          const [id, userId, type, name, calories, items, occurredAt, updatedAt, clientTag] = params;
           const arr = self.tables.get('meals') || [];
           const idx = arr.findIndex((r) => r.id === id);
-          const row = { id, name, calories, occurredAt, updatedAt };
+          const row = { id, userId, type, name, calories, items, occurredAt, updatedAt, clientTag };
           if (idx >= 0) arr[idx] = row;
           else arr.push(row);
           self.tables.set('meals', arr);
           return { changes: 1 };
         }
         if (lower.startsWith('update meals set')) {
-          const [name, calories, occurredAt, updatedAt, id] = params;
+          // userId, type, name, calories, items, occurredAt, updatedAt, clientTag, id
+          const [userId, type, name, calories, items, occurredAt, updatedAt, clientTag, id] = params;
           const arr = self.tables.get('meals') || [];
           const idx = arr.findIndex((r) => r.id === id);
           let changes = 0;
           if (idx >= 0) {
-            arr[idx] = { ...arr[idx], name, calories, occurredAt, updatedAt };
+            arr[idx] = { ...arr[idx], userId, type, name, calories, items, occurredAt, updatedAt, clientTag };
             changes = 1;
           }
           self.tables.set('meals', arr);
@@ -75,22 +77,24 @@ export class MemoryDb {
 
         // activities
         if (lower.startsWith('insert or replace into activities')) {
-          const [id, kind, durationSec, updatedAt] = params;
+          // id, userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag
+          const [id, userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag] = params;
           const arr = self.tables.get('activities') || [];
           const idx = arr.findIndex((r) => r.id === id);
-          const row = { id, kind, durationSec, updatedAt };
+          const row = { id, userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag };
           if (idx >= 0) arr[idx] = row;
           else arr.push(row);
           self.tables.set('activities', arr);
           return { changes: 1 };
         }
         if (lower.startsWith('update activities set')) {
-          const [kind, durationSec, updatedAt, id] = params;
+          // userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag, id
+          const [userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag, id] = params;
           const arr = self.tables.get('activities') || [];
           const idx = arr.findIndex((r) => r.id === id);
           let changes = 0;
           if (idx >= 0) {
-            arr[idx] = { ...arr[idx], kind, durationSec, updatedAt };
+            arr[idx] = { ...arr[idx], userId, kind, distanceKm, durationSec, steps, samples, startedAt, endedAt, updatedAt, clientTag };
             changes = 1;
           }
           self.tables.set('activities', arr);
@@ -99,22 +103,24 @@ export class MemoryDb {
 
         // workouts
         if (lower.startsWith('insert or replace into workouts')) {
-          const [id, name, updatedAt] = params;
+          // id, userId, name, reps, updatedAt, clientTag
+          const [id, userId, name, reps, updatedAt, clientTag] = params;
           const arr = self.tables.get('workouts') || [];
           const idx = arr.findIndex((r) => r.id === id);
-          const row = { id, name, updatedAt };
+          const row = { id, userId, name, reps, updatedAt, clientTag };
           if (idx >= 0) arr[idx] = row;
           else arr.push(row);
           self.tables.set('workouts', arr);
           return { changes: 1 };
         }
         if (lower.startsWith('update workouts set')) {
-          const [name, updatedAt, id] = params;
+          // userId, name, reps, updatedAt, clientTag, id
+          const [userId, name, reps, updatedAt, clientTag, id] = params;
           const arr = self.tables.get('workouts') || [];
           const idx = arr.findIndex((r) => r.id === id);
           let changes = 0;
           if (idx >= 0) {
-            arr[idx] = { ...arr[idx], name, updatedAt };
+            arr[idx] = { ...arr[idx], userId, name, reps, updatedAt, clientTag };
             changes = 1;
           }
           self.tables.set('workouts', arr);
@@ -123,22 +129,24 @@ export class MemoryDb {
 
         // weights
         if (lower.startsWith('insert or replace into weights')) {
-          const [id, valueKg, occurredAt, updatedAt] = params;
+          // id, userId, valueKg, occurredAt, updatedAt, clientTag
+          const [id, userId, valueKg, occurredAt, updatedAt, clientTag] = params;
           const arr = self.tables.get('weights') || [];
           const idx = arr.findIndex((r) => r.id === id);
-          const row = { id, valueKg, occurredAt, updatedAt };
+          const row = { id, userId, valueKg, occurredAt, updatedAt, clientTag };
           if (idx >= 0) arr[idx] = row;
           else arr.push(row);
           self.tables.set('weights', arr);
           return { changes: 1 };
         }
         if (lower.startsWith('update weights set')) {
-          const [valueKg, occurredAt, updatedAt, id] = params;
+          // userId, valueKg, occurredAt, updatedAt, clientTag, id
+          const [userId, valueKg, occurredAt, updatedAt, clientTag, id] = params;
           const arr = self.tables.get('weights') || [];
           const idx = arr.findIndex((r) => r.id === id);
           let changes = 0;
           if (idx >= 0) {
-            arr[idx] = { ...arr[idx], valueKg, occurredAt, updatedAt };
+            arr[idx] = { ...arr[idx], userId, valueKg, occurredAt, updatedAt, clientTag };
             changes = 1;
           }
           self.tables.set('weights', arr);
@@ -260,26 +268,78 @@ export function getDatabase(dbPath = 'fitness.db') {
 export function initSchema(db) {
   db.exec(`CREATE TABLE IF NOT EXISTS meals (
     id TEXT PRIMARY KEY,
+    userId TEXT,
+    type TEXT,
     name TEXT NOT NULL,
     calories INTEGER NOT NULL,
+    items TEXT,
     occurredAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL
+    updatedAt INTEGER NOT NULL,
+    clientTag TEXT
   )`);
   db.exec(`CREATE TABLE IF NOT EXISTS activities (
     id TEXT PRIMARY KEY,
+    userId TEXT,
     kind TEXT NOT NULL,
+    distanceKm REAL DEFAULT 0,
     durationSec INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL
+    steps INTEGER DEFAULT 0,
+    samples TEXT,
+    startedAt INTEGER,
+    endedAt INTEGER,
+    updatedAt INTEGER NOT NULL,
+    clientTag TEXT
   )`);
   db.exec(`CREATE TABLE IF NOT EXISTS workouts (
     id TEXT PRIMARY KEY,
+    userId TEXT,
     name TEXT NOT NULL,
-    updatedAt INTEGER NOT NULL
+    reps TEXT,
+    updatedAt INTEGER NOT NULL,
+    clientTag TEXT
   )`);
   db.exec(`CREATE TABLE IF NOT EXISTS weights (
     id TEXT PRIMARY KEY,
+    userId TEXT,
     valueKg REAL NOT NULL,
     occurredAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL
+    updatedAt INTEGER NOT NULL,
+    clientTag TEXT
   )`);
+
+  // Add missing columns for existing DBs
+  function ensureColumns(table, columns) {
+    try {
+      const existing = new Set(db.prepare(`PRAGMA table_info(${table})`).all().map((r) => r.name));
+      for (const [name, type, def] of columns) {
+        if (!existing.has(name)) {
+          db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${type}${def ? ' DEFAULT ' + def : ''}`);
+        }
+      }
+    } catch {}
+  }
+  ensureColumns('meals', [
+    ['userId', 'TEXT', null],
+    ['type', 'TEXT', null],
+    ['items', 'TEXT', null],
+    ['clientTag', 'TEXT', null],
+  ]);
+  ensureColumns('activities', [
+    ['userId', 'TEXT', null],
+    ['distanceKm', 'REAL', 0],
+    ['steps', 'INTEGER', 0],
+    ['samples', 'TEXT', null],
+    ['startedAt', 'INTEGER', null],
+    ['endedAt', 'INTEGER', null],
+    ['clientTag', 'TEXT', null],
+  ]);
+  ensureColumns('workouts', [
+    ['userId', 'TEXT', null],
+    ['reps', 'TEXT', null],
+    ['clientTag', 'TEXT', null],
+  ]);
+  ensureColumns('weights', [
+    ['userId', 'TEXT', null],
+    ['clientTag', 'TEXT', null],
+  ]);
 }

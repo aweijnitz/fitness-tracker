@@ -17,39 +17,49 @@
  * @param {import('express').Application} app Express application instance
  * @param {{ prepare: Function, exec: Function }} db Database handle
  */
-import { sanitizeId, sanitizeNumber } from '../sanitize.js';
+import { sanitizeId, sanitizeNumber, sanitizeText } from '../sanitize.js';
 
 export function registerWeightRoutes(app, db) {
   // weights (CRUD)
   app.post('/v1/weights', (req, res) => {
     const id = sanitizeId(req.body.id);
-    const valueKg = sanitizeNumber(req.body.valueKg, 0, 1000);
+    const userId = sanitizeText(req.body.userId ?? '');
+    const kg = sanitizeNumber(req.body.kg ?? req.body.valueKg, 0, 1000);
     const occurredAt = sanitizeNumber(req.body.occurredAt, 0);
     const updatedAt = sanitizeNumber(req.body.updatedAt, 0);
+    const clientTag = sanitizeText(req.body.clientTag ?? '');
     const stmt = db.prepare(
-      'INSERT OR REPLACE INTO weights (id, valueKg, occurredAt, updatedAt) VALUES (?, ?, ?, ?)'
+      'INSERT OR REPLACE INTO weights (id, userId, valueKg, occurredAt, updatedAt, clientTag) VALUES (?, ?, ?, ?, ?, ?)'
     );
-    stmt.run(id, valueKg, occurredAt, updatedAt);
+    stmt.run(id, userId, kg, occurredAt, updatedAt, clientTag);
     res.json({ ok: true });
   });
 
   app.put('/v1/weights/:id', (req, res) => {
     const id = sanitizeId(req.params.id);
-    const valueKg = sanitizeNumber(req.body.valueKg, 0, 1000);
+    const userId = sanitizeText(req.body.userId ?? '');
+    const kg = sanitizeNumber(req.body.kg ?? req.body.valueKg, 0, 1000);
     const occurredAt = sanitizeNumber(req.body.occurredAt, 0);
     const updatedAt = sanitizeNumber(req.body.updatedAt, 0);
+    const clientTag = sanitizeText(req.body.clientTag ?? '');
     const stmt = db.prepare(
-      'UPDATE weights SET valueKg=?, occurredAt=?, updatedAt=? WHERE id=?'
+      'UPDATE weights SET userId=?, valueKg=?, occurredAt=?, updatedAt=?, clientTag=? WHERE id=?'
     );
-    const info = stmt.run(valueKg, occurredAt, updatedAt, id);
+    const info = stmt.run(userId, kg, occurredAt, updatedAt, clientTag, id);
     res.json({ updated: info.changes > 0 });
   });
 
   app.get('/v1/weights', (req, res) => {
-    const since = sanitizeNumber(req.query.since, 0);
-    const items = db
-      .prepare('SELECT * FROM weights WHERE updatedAt >= ?')
-      .all(since || 0);
+    const since = sanitizeNumber(req.query.since, 0) || 0;
+    const rows = db.prepare('SELECT * FROM weights WHERE updatedAt >= ?').all(since);
+    const items = rows.map((r) => ({
+      id: r.id,
+      userId: r.userId ?? 'server',
+      kg: r.valueKg, // stored column name is valueKg
+      occurredAt: r.occurredAt,
+      updatedAt: r.updatedAt,
+      clientTag: r.clientTag ?? 'server',
+    }));
     res.json({ items, syncStamp: Date.now() });
   });
 
