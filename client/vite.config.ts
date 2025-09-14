@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import path from 'node:path';
 
 export default defineConfig({
   plugins: [
@@ -23,6 +24,11 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      'openauth-js': path.resolve(__dirname, 'openauth-js'),
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
