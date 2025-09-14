@@ -2,6 +2,10 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// __dirname is not available in ESM; derive it for config usage
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [
