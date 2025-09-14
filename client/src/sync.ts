@@ -1,11 +1,12 @@
 import { db, type AppDB, type Mutation, type MutationEntity, type MutationOperation } from './db';
+import { uuid } from './utils/uuid';
 
 export async function enqueueMutation(
   mutation: { entity: MutationEntity; operation: MutationOperation; payload: unknown },
   database: AppDB = db,
 ) {
   const item: Mutation = {
-    id: crypto.randomUUID(),
+    id: uuid(),
     retryCount: 0,
     retryAt: 0,
     createdAt: Date.now(),
