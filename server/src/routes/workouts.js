@@ -44,4 +44,10 @@ export function registerWorkoutRoutes(app, db) {
     const items = db.prepare('SELECT * FROM workouts WHERE updatedAt >= ?').all(since);
     res.json({ items, syncStamp: Date.now() });
   });
+
+  app.delete('/v1/workouts/:id', (req, res) => {
+    const id = sanitizeId(req.params.id);
+    const info = db.prepare('DELETE FROM workouts WHERE id=?').run(id);
+    res.json({ deleted: info.changes > 0 });
+  });
 }

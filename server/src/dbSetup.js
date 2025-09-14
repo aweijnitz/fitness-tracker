@@ -152,6 +152,30 @@ export class MemoryDb {
           self.tables.set('weights', next);
           return { changes: before - next.length };
         }
+        if (lower.startsWith('delete from meals where id=')) {
+          const [id] = params;
+          const arr = self.tables.get('meals') || [];
+          const before = arr.length;
+          const next = arr.filter((r) => r.id !== id);
+          self.tables.set('meals', next);
+          return { changes: before - next.length };
+        }
+        if (lower.startsWith('delete from activities where id=')) {
+          const [id] = params;
+          const arr = self.tables.get('activities') || [];
+          const before = arr.length;
+          const next = arr.filter((r) => r.id !== id);
+          self.tables.set('activities', next);
+          return { changes: before - next.length };
+        }
+        if (lower.startsWith('delete from workouts where id=')) {
+          const [id] = params;
+          const arr = self.tables.get('workouts') || [];
+          const before = arr.length;
+          const next = arr.filter((r) => r.id !== id);
+          self.tables.set('workouts', next);
+          return { changes: before - next.length };
+        }
 
         // bulk deletes
         if (lower.startsWith('delete from meals')) {
@@ -259,4 +283,3 @@ export function initSchema(db) {
     updatedAt INTEGER NOT NULL
   )`);
 }
-

@@ -1,4 +1,7 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { replayMutations } from './sync';
+import { sendMutationViaFetch, syncDownWeights, syncDownMeals, syncDownActivities, syncDownWorkouts } from './serverSync';
 import AppShell from './AppShell';
 import Dashboard from './routes/Dashboard';
 import Meals from './routes/Meals';
@@ -12,6 +15,19 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import NewMeal from './routes/NewMeal';
 
 export default function App() {
+  useEffect(() => {
+    (async () => {
+      try {
+        await Promise.all([
+          syncDownWeights(),
+          syncDownMeals(),
+          syncDownActivities(),
+          syncDownWorkouts(),
+        ]);
+        await replayMutations({ sendMutation: sendMutationViaFetch });
+      } catch {}
+    })();
+  }, []);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

@@ -50,4 +50,10 @@ export function registerActivityRoutes(app, db) {
       .all(since);
     res.json({ items, syncStamp: Date.now() });
   });
+
+  app.delete('/v1/activities/:id', (req, res) => {
+    const id = sanitizeId(req.params.id);
+    const info = db.prepare('DELETE FROM activities WHERE id=?').run(id);
+    res.json({ deleted: info.changes > 0 });
+  });
 }

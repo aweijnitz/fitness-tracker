@@ -50,4 +50,10 @@ export function registerMealRoutes(app, db) {
     const items = db.prepare('SELECT * FROM meals WHERE updatedAt >= ?').all(since);
     res.json({ items, syncStamp: Date.now() });
   });
+
+  app.delete('/v1/meals/:id', (req, res) => {
+    const id = sanitizeId(req.params.id);
+    const info = db.prepare('DELETE FROM meals WHERE id=?').run(id);
+    res.json({ deleted: info.changes > 0 });
+  });
 }

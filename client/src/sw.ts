@@ -4,6 +4,7 @@ import { registerRoute } from 'workbox-routing';
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 import { clientsClaim } from 'workbox-core';
 import { replayMutations } from './sync';
+import { sendMutationViaFetch } from './serverSync';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -37,6 +38,6 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('sync', (event) => {
   const syncEvent = event as SyncEvent;
   if (syncEvent.tag === 'sync-mutations') {
-    syncEvent.waitUntil(replayMutations());
+    syncEvent.waitUntil(replayMutations({ sendMutation: sendMutationViaFetch }));
   }
 });
