@@ -8,6 +8,7 @@
     "build": "echo 'no build needed'"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "better-sqlite3": "^9.4.3",
     "express": "^4.19.2"
   },

@@ -30,6 +30,21 @@ The monorepo root also provides `npm start` which runs this package.
 - Tests use an in-memory DB stub when `DB_PATH=':memory:'` to avoid native module requirements.
 - Production and development (with file DB paths) use `better-sqlite3` for performance.
 
+## Architecture
+
+- Entry: `src/index.js`
+  - Loads `.env`, initializes DB schema, configures Express, serves static client.
+  - Registers route modules and returns `{ app, db }` via `createServer()`.
+- Routes: `src/routes/`
+  - `meals.js` — `/v1/meals`
+  - `activities.js` — `/v1/activities`
+  - `workouts.js` — `/v1/workouts`
+  - `weights.js` — `/v1/weights`
+  - `dev.js` — `/v1/_dev/populate`, `/v1/_dev/clear` (disabled when `NODE_ENV=production`)
+- Utilities
+  - `src/sanitize.js` — `sanitizeId`, `sanitizeText`, `sanitizeNumber`
+  - In tests or when `DB_PATH=':memory:'`, a lightweight in-memory DB is used inside `index.js` to mimic the SQL used by the routes.
+
 ## Endpoints
 
 All endpoints are prefixed at the root (no global prefix) and return JSON.
