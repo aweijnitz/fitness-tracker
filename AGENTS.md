@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Always refer to the file ImplementationPlan.md for architectural approach, tech stack and other important details.
+Always refer to the file `ImplementationPlan.md` for architectural approach, tech stack and other important details.
 
 ## Project Structure & Module Organization
 - `client/` — React + TypeScript PWA (Vite). Source in `client/src`, tests in `client/src/__tests__`, assets in `client/src/assets`.
