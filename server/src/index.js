@@ -3,6 +3,47 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 
+// Load configuration from .env without external deps
+function loadEnv() {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const candidates = [
+      path.resolve(__dirname, '../.env'),
+      path.resolve(process.cwd(), '.env'),
+    ];
+    for (const p of candidates) {
+      try {
+        const fs = requireFs();
+        if (fs.existsSync(p)) {
+          const content = fs.readFileSync(p, 'utf8');
+          for (const rawLine of content.split(/\r?\n/)) {
+            const line = rawLine.trim();
+            if (!line || line.startsWith('#')) continue;
+            const idx = line.indexOf('=');
+            if (idx === -1) continue;
+            const key = line.slice(0, idx).trim();
+            let val = line.slice(idx + 1).trim();
+            if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+              val = val.slice(1, -1);
+            }
+            if (process.env[key] === undefined) process.env[key] = val;
+          }
+          break; // stop at first found
+        }
+      } catch {
+        // ignore file read/parse issues
+      }
+    }
+  } catch {
+    // noop
+  }
+}
+
+function requireFs() {
+  return createRequire(import.meta.url)('fs');
+}
+
 // Minimal in-memory DB used for tests (dbPath === ':memory:') to avoid native module
 class MemoryDb {
   constructor() {
@@ -180,7 +221,10 @@ function sanitizeNumber(value, min = -Infinity, max = Infinity) {
   return Math.min(Math.max(n, min), max);
 }
 
-export function createServer(dbPath = 'fitness.db') {
+// Load env before reading defaults
+loadEnv();
+
+export function createServer(dbPath = process.env.DB_PATH || 'fitness.db') {
   const db = dbPath === ':memory:'
     ? new MemoryDb()
     : new (createRequire(import.meta.url)('better-sqlite3'))(dbPath);
@@ -345,6 +389,7 @@ export function createServer(dbPath = 'fitness.db') {
 // start server if run directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { app } = createServer();
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Server listening on ${port}`));
+  const port = Number(process.env.PORT) || 3000;
+  const host = process.env.HOST || process.env.IP || '0.0.0.0';
+  app.listen(port, host, () => console.log(`Server listening on http://${host}:${port}`));
 }
