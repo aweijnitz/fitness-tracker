@@ -3,9 +3,15 @@
 This repository contains two packages:
 
 - **client/** – React progressive web application.
-- **server/** – Express backend that serves the built client and provides a REST API.
+- **server/** – Express backend that serves the built client and provides a REST API for the app.
 
 ## Commands
+
+Install pagackes or client and server
+
+```sh
+npm run setup
+```
 
 Run tests for both packages:
 

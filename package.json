@@ -4,7 +4,8 @@
   "scripts": {
     "test": "npm test --prefix client && npm test --prefix server",
     "build": "npm run build --prefix client && npm run build --prefix server",
-    "start": "npm start --prefix server"
+    "start": "npm start --prefix server",
+    "setup": "npm install --prefix server && npm install --prefix client"
   },
   "devDependencies": {
     "vitest": "^3.2.4"
