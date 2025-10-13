@@ -30,3 +30,21 @@ Start the backend (after building the client):
 ```sh
 npm start
 ```
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Client
+    PWA[React PWA]
+  end
+
+  subgraph Server
+    API[Express API]
+    DB[(SQLite Database)]
+  end
+
+  PWA -->|"REST requests"| API
+  API -->|"Serves built client"| PWA
+  API --> DB
+```
