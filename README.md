@@ -1,5 +1,7 @@
 # Fitness Tracker Monorepo
 
+Offline-first fitness tracker with a self-hosted backend. Client implemented as a progressive web application (PWA).
+
 This repository contains two packages:
 
 - **client/** – React progressive web application.
